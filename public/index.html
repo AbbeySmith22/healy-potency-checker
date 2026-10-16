@@ -402,30 +402,32 @@ body {
   .header h1 { font-size: 24px; }
 }
 
-/* HVL LOGO — DESKTOP */
-.header {
-  position: relative;
+
+/* HIGH VIBRANCY LIVING — FOOTER LOGO */
+
+.footer {
+  text-align: center;
+  margin-top: 40px;
+  padding: 25px 20px;
+  opacity: 1;
 }
 
-.header .hvl-logo {
-  position: absolute;
-  top: 25px;
-  right: 25px;
-  width: 100px !important;
-  max-width: 100px !important;
-  height: auto !important;
+.footer-logo {
+  display: block;
+  position: static;
+  width: 90px;
+  max-width: 90px;
+  height: auto;
+  margin: 0 auto 15px;
   object-fit: contain;
 }
 
-/* HVL LOGO — MOBILE */
-@media (max-width: 600px) {
-  .header .hvl-logo {
-    width: 55px !important;
-    max-width: 55px !important;
-    top: 15px;
-    right: 15px;
-  }
+.footer p {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  color: #68657C;
 }
+
 
 </style>
 
@@ -440,13 +442,6 @@ body {
   ============================================ -->
   
 <div class="header">
-
-  
-<img
-  src="/images/HVL%20Icon%20Logo%20final%20(trans).png"
-  alt="High Vibrancy Living"
-  class="hvl-logo"
->
 
 
   <div class="kicker">High Vibrancy Living</div>
@@ -553,7 +548,15 @@ body {
   </div>
 
   <!-- CUSTOMIZE: Change footer brand name -->
-  <div class="footer">High Vibrancy Living &nbsp;·&nbsp; Powered by AI</div>
+
+<div class="footer">
+  <img
+    src="/images/HVL%20Icon%20Logo%20final%20(trans).png"
+    alt="High Vibrancy Living"
+    class="footer-logo"
+  >
+  <p>High Vibrancy Living · Powered by AI</p>
+</div>
 
 </div>
 
