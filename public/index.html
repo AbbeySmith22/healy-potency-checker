@@ -73,35 +73,52 @@ body {
     text-align: center;
     margin-bottom: 36px;
   }
-  /* CUSTOMIZE: Change the kicker text (the small label above the title) */
-  .kicker {
-    font-family: 'Be Vietnam Pro', sans-serif;
-    font-weight: 700;
-    font-size: 11px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--accent-secondary);
-    margin-bottom: 10px;
-  }
+  
+/* HIGH VIBRANCY LIVING — HEADER TYPOGRAPHY */
+
+.kicker {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #8370D9;
+  margin-bottom: 12px;
+}
+
+.header h1 {
+  font-family: 'Fraunces', serif;
+  font-weight: 300;
+  font-size: 42px;
+  line-height: 1.2;
+  color: #19172F;
+
+  /* REMOVE GRADIENT TEXT */
+  background: none;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+  -webkit-text-fill-color: #19172F;
+
+  margin-bottom: 14px;
+}
+
+/* SUBTITLE */
+.header p {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  color: #68657C;
+  line-height: 1.7;
+  max-width: 480px;
+  margin: 0;
+}
+
+/* MOBILE */
+@media (max-width: 600px) {
   .header h1 {
-    font-family: 'Be Vietnam Pro', sans-serif;
-    font-weight: 900;
     font-size: 30px;
-    line-height: 1.2;
-    background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-secondary) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 10px;
   }
-  /* CUSTOMIZE: Change the subtitle text */
-  .header p {
-    font-size: 15px;
-    color: var(--text-secondary);
-    line-height: 1.6;
-    max-width: 480px;
-    margin: 0 auto;
-  }
+}
 
   /* ---- Cards ---- */
   .card {
