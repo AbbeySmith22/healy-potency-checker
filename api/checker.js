@@ -14,9 +14,9 @@ export default async function handler(req, res) {
   // below and add your API key to Vercel env vars.
   // See Module 4 for full setup instructions.
   // ============================================
- if (email) {
-    // await captureEmail(email);
-
+if (email) {
+  await captureEmail(email);
+}
   // ============================================
   // extractText helper
   // Required for claude-sonnet-5 which may return
@@ -588,56 +588,39 @@ IMPORTANT: This is a wellness tool only. Do not make medical claims, diagnoses, 
   }
 }
 
-// ============================================
-/ ============================================
-// Email capture function (commented out)
-// CUSTOMIZE: Uncomment and configure for your
-// email marketing platform. See Module 4.
-// ============================================
-
-/*
 async function captureEmail(email) {
-  // --- BREVO ---
-  // Uncomment this block if you use Brevo
-  // Add BREVO_API_KEY to Vercel environment variables
-  // Add your list ID below
-  //
-  // try {
-  //   await fetch('https://api.brevo.com/v3/contacts', {
-  //     method: 'POST',
-  //     headers: {
-  //       'accept': 'application/json',
-  //       'api-key': process.env.BREVO_API_KEY,
-  //       'content-type': 'application/json'
-  //     },
-  //     body: JSON.stringify({
-  //       email: email,
-  //       listIds: [YOUR_LIST_ID_HERE],  // Replace with your Brevo list ID number
-  //       updateEnabled: true
-  //     })
-  //   });
-  // } catch (err) {
-  //   console.error('Brevo capture error:', err);
-  // }
+  if (!process.env.SYSTEME_API_KEY) {
+    console.error('SYSTEME_API_KEY is missing');
+    return;
+  }
 
-  // --- SYSTEME.IO ---
-  // Uncomment this block if you use Systeme.io
-  // Add SYSTEME_API_KEY to Vercel environment variables
-  //
-  // try {
-  //   await fetch('https://api.systeme.io/api/contacts', {
-  //     method: 'POST',
-  //     headers: {
-  //       'X-API-Key': process.env.SYSTEME_API_KEY,
-  //       'Content-Type': 'application/json'
-  //     },
-  //     body: JSON.stringify({
-  //       email: email,
-  //       tags: ['healy-tool']  // Replace with your tag name
-  //     })
-  //   });
-  // } catch (err) {
-  //   console.error('Systeme.io capture error:', err);
-  // }
+  try {
+    const response = await fetch(
+      'https://api.systeme.io/api/contacts',
+      {
+        method: 'POST',
+        headers: {
+          'X-API-Key': process.env.SYSTEME_API_KEY,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: email
+        })
+      }
+    );
+
+    if (!response.ok) {
+      const error = await response.text();
+      console.error(
+        'Systeme.io error:',
+        response.status,
+        error
+      );
+      return;
+    }
+
+    console.log('Contact sent to Systeme.io');
+  } catch (err) {
+    console.error('Systeme.io capture error:', err);
+  }
 }
-*/
