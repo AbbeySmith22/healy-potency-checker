@@ -588,6 +588,7 @@ IMPORTANT: This is a wellness tool only. Do not make medical claims, diagnoses, 
   }
 }
 
+
 async function captureEmail(email) {
   if (!process.env.SYSTEME_API_KEY) {
     console.error('SYSTEME_API_KEY is missing');
@@ -595,6 +596,7 @@ async function captureEmail(email) {
   }
 
   try {
+    // STEP 1: Create contact in Systeme.io
     const response = await fetch(
       'https://api.systeme.io/api/contacts',
       {
@@ -612,14 +614,47 @@ async function captureEmail(email) {
     if (!response.ok) {
       const error = await response.text();
       console.error(
-        'Systeme.io error:',
+        'Systeme.io contact error:',
         response.status,
         error
       );
       return;
     }
 
-    console.log('Contact sent to Systeme.io');
+    const contact = await response.json();
+
+    if (!contact.id) {
+      console.error('Contact ID missing');
+      return;
+    }
+
+    // STEP 2: Add Healy Potency Checker tag
+    const tagResponse = await fetch(
+      `https://api.systeme.io/api/contacts/${contact.id}/tags`,
+      {
+        method: 'POST',
+        headers: {
+          'X-API-Key': process.env.SYSTEME_API_KEY,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          tagId: 2233085
+        })
+      }
+    );
+
+    if (!tagResponse.ok) {
+      const error = await tagResponse.text();
+      console.error(
+        'Systeme.io tag error:',
+        tagResponse.status,
+        error
+      );
+      return;
+    }
+
+    console.log('Contact created and tagged successfully');
+
   } catch (err) {
     console.error('Systeme.io capture error:', err);
   }
