@@ -9,38 +9,63 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-  /* ============================================
-     CUSTOMIZE: Change these color variables to
-     match your brand. Everything else inherits
-     from these tokens.
-  ============================================ */
-  :root {
-    --bg-page:        #080B1A;
-    --bg-card:        #0F1629;
-    --bg-card-inner:  #141D35;
-    --accent-primary: #7C3AED;
-    --accent-secondary: #06B6D4;
-    --accent-glow:    rgba(124, 58, 237, 0.25);
-    --text-primary:   #F0F4FF;
-    --text-secondary: #9BA8C4;
-    --border-color:   rgba(124, 58, 237, 0.3);
-    --border-subtle:  rgba(255, 255, 255, 0.08);
-    --error-color:    #F87171;
-    --success-color:  #34D399;
-    --btn-gradient:   linear-gradient(135deg, #7C3AED, #06B6D4);
-  }
+  
+/* ============================================
+   HIGH VIBRANCY LIVING — BRAND TOKENS
+   No-faff frequency tools for real life
+============================================ */
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  /* SOFT PASTEL BACKGROUNDS */
+  --bg-page:        #F8F7FF;
+  --bg-card:        #FFFFFF;
+  --bg-card-inner:  #F0EDFC;
 
-  body {
-    background: var(--bg-page);
-    font-family: 'Nunito Sans', sans-serif;
-    color: var(--text-primary);
-    min-height: 100vh;
-    padding: 32px 20px 80px;
-  }
+  /* BRAND ACCENTS */
+  --accent-primary:   #8370D9;
+  --accent-secondary: #A8E9E1;
+  --accent-glow: rgba(131, 112, 217, 0.18);
 
-  /* ---- Layout ---- */
+  /* TEXT */
+  --text-primary:   #19172F;
+  --text-secondary: #68657C;
+
+  /* BORDERS */
+  --border-color:  #DCD7F4;
+  --border-subtle: rgba(131, 112, 217, 0.12);
+
+  /* STATUS COLOURS */
+  --error-color:   #D65C72;
+  --success-color: #248A76;
+
+  /* SOFT FREQUENCY GRADIENT */
+  --btn-gradient: linear-gradient(
+    135deg,
+    #8370D9 0%,
+    #A8E9E1 100%
+  );
+
+  /* TYPOGRAPHY */
+  --heading-font: 'Fraunces', serif;
+  --body-font: 'Inter', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg-page);
+  font-family: var(--body-font);
+  color: var(--text-primary);
+  min-height: 100vh;
+  padding: 32px 20px 80px;
+}
+
+/* ---- Layout ---- */
+
   .wrap { max-width: 640px; margin: 0 auto; }
 
   /* ---- Header ---- */
