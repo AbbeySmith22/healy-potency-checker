@@ -42,7 +42,7 @@ if (email) {
       body: JSON.stringify({
         // CUSTOMIZE: You can change the model, but claude-sonnet-5 is recommended
         model: 'claude-sonnet-5',
-        max_tokens: 1000,
+        max_tokens: 2000,
 
         // ============================================
         // CUSTOMIZE: This is the system prompt.
@@ -567,18 +567,42 @@ IMPORTANT: This is a wellness tool only. Do not make medical claims, diagnoses, 
     const text = extractText(data);
     if (!text) throw new Error('No response from AI');
 
-    // Parse the JSON response
+
+    // Parse and validate the AI response
     let result;
+
     try {
-      result = JSON.parse(text.replace(/```json|```/g, '').trim());
-    } catch {
-      // Fallback if AI returns plain text instead of JSON
-      result = {
-        interpretation: text,
-        key_finding: '',
-        next_step: ''
-      };
+      let cleaned = text.trim();
+
+      // Remove Markdown code fences
+      cleaned = cleaned
+        .replace(/```(?:json)?\s*/gi, '')
+        .replace(/```/g, '')
+        .trim();
+
+      result = JSON.parse(cleaned);
+
+      // Ensure all three fields exist
+      if (
+        !result ||
+        typeof result.interpretation !== 'string' ||
+        !result.interpretation.trim() ||
+        typeof result.key_finding !== 'string' ||
+        !result.key_finding.trim() ||
+        typeof result.next_step !== 'string' ||
+        !result.next_step.trim()
+      ) {
+        throw new Error('Missing result sections');
+      }
+
+    } catch (parseError) {
+      console.error('AI response parsing failed:', parseError.message);
+
+      return res.status(502).json({
+        error: 'The AI response was incomplete or incorrectly formatted. Please try again.'
+      });
     }
+
 
     return res.status(200).json(result);
 
