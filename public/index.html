@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- CUSTOMIZE: Change this title to match your tool -->
+<title>Healy Potency Checker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ============================================
+     CUSTOMIZE: Change these color variables to
+     match your brand. Everything else inherits
+     from these tokens.
+  ============================================ */
+  :root {
+    --bg-page:        #080B1A;
+    --bg-card:        #0F1629;
+    --bg-card-inner:  #141D35;
+    --accent-primary: #7C3AED;
+    --accent-secondary: #06B6D4;
+    --accent-glow:    rgba(124, 58, 237, 0.25);
+    --text-primary:   #F0F4FF;
+    --text-secondary: #9BA8C4;
+    --border-color:   rgba(124, 58, 237, 0.3);
+    --border-subtle:  rgba(255, 255, 255, 0.08);
+    --error-color:    #F87171;
+    --success-color:  #34D399;
+    --btn-gradient:   linear-gradient(135deg, #7C3AED, #06B6D4);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg-page);
+    font-family: 'Nunito Sans', sans-serif;
+    color: var(--text-primary);
+    min-height: 100vh;
+    padding: 32px 20px 80px;
+  }
+
+  /* ---- Layout ---- */
+  .wrap { max-width: 640px; margin: 0 auto; }
+
+  /* ---- Header ---- */
+  .header {
+    text-align: center;
+    margin-bottom: 36px;
+  }
+  /* CUSTOMIZE: Change the kicker text (the small label above the title) */
+  .kicker {
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent-secondary);
+    margin-bottom: 10px;
+  }
+  .header h1 {
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-weight: 900;
+    font-size: 30px;
+    line-height: 1.2;
+    background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 10px;
+  }
+  /* CUSTOMIZE: Change the subtitle text */
+  .header p {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  /* ---- Cards ---- */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 20px;
+  }
+
+  .card-title {
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-weight: 800;
+    font-size: 14px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent-secondary);
+    margin-bottom: 20px;
+  }
+
+  /* ---- Form fields ---- */
+  .field { margin-bottom: 20px; }
+  .field:last-child { margin-bottom: 0; }
+
+  label {
+    display: block;
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+  }
+  .field-hint {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    line-height: 1.5;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="number"],
+  select,
+  textarea {
+    width: 100%;
+    background: var(--bg-card-inner);
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text-primary);
+    transition: border-color 0.2s;
+  }
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  input[type="number"]:focus,
+  select:focus,
+  textarea:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+  }
+  input::placeholder,
+  textarea::placeholder { color: var(--text-secondary); opacity: 0.7; }
+
+  select option { background: var(--bg-card); }
+
+  /* ---- Row layout for short fields ---- */
+  .field-row {
+    display: flex;
+    gap: 14px;
+  }
+  .field-row .field { flex: 1; margin-bottom: 0; }
+
+  /* ---- Email gate ---- */
+  #email-gate {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 20px;
+    display: none;
+  }
+  #email-gate h2 {
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+  /* CUSTOMIZE: Change this email gate description */
+  #email-gate p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 18px;
+    line-height: 1.6;
+  }
+
+  /* ---- Buttons ---- */
+  .btn-primary {
+    width: 100%;
+    background: var(--btn-gradient);
+    color: #fff;
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-weight: 800;
+    font-size: 15px;
+    border: none;
+    border-radius: 10px;
+    padding: 14px 24px;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+    letter-spacing: 0.02em;
+  }
+  .btn-primary:hover { opacity: 0.9; }
+  .btn-primary:active { transform: scale(0.99); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--text-secondary);
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    padding: 9px 18px;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--accent-primary); color: var(--text-primary); }
+
+  /* ---- Loading spinner ---- */
+  .spinner {
+    display: none;
+    width: 22px;
+    height: 22px;
+    border: 2px solid rgba(255,255,255,0.2);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin: 0 auto;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ---- Results section ---- */
+  #results { display: none; }
+
+  .result-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 16px;
+  }
+
+  /* The main interpretation block */
+  .result-headline {
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-weight: 900;
+    font-size: 22px;
+    line-height: 1.3;
+    margin-bottom: 6px;
+    background: linear-gradient(135deg, var(--text-primary), var(--accent-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .result-label {
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-primary);
+    margin-bottom: 16px;
+  }
+
+  .result-body {
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--text-secondary);
+  }
+  .result-body p { margin-bottom: 12px; }
+  .result-body p:last-child { margin-bottom: 0; }
+
+  /* Key finding highlight box */
+  .highlight-box {
+    background: linear-gradient(135deg, rgba(124,58,237,0.12), rgba(6,182,212,0.08));
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+  }
+  .highlight-box .label {
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-weight: 800;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-secondary);
+    margin-bottom: 8px;
+  }
+  .highlight-box .content {
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--text-primary);
+    line-height: 1.4;
+  }
+
+  /* Next step callout */
+  .next-step {
+    background: rgba(52, 211, 153, 0.08);
+    border: 1px solid rgba(52, 211, 153, 0.25);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 20px;
+  }
+  .next-step .label {
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-weight: 800;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--success-color);
+    margin-bottom: 8px;
+  }
+  .next-step .content {
+    font-size: 14px;
+    color: var(--text-primary);
+    line-height: 1.6;
+  }
+
+  /* ---- Actions row ---- */
+  .actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+  .actions .btn-primary { flex: 1; }
+  .actions .btn-secondary { white-space: nowrap; }
+
+  /* ---- Error ---- */
+  .error-msg {
+    background: rgba(248,113,113,0.1);
+    border: 1px solid rgba(248,113,113,0.3);
+    border-radius: 10px;
+    padding: 14px 18px;
+    font-size: 13px;
+    color: var(--error-color);
+    margin-top: 12px;
+    display: none;
+  }
+
+  /* ---- Disclaimer ---- */
+  .disclaimer {
+    font-size: 11.5px;
+    color: var(--text-secondary);
+    text-align: center;
+    margin-top: 28px;
+    line-height: 1.6;
+    opacity: 0.7;
+  }
+
+  /* ---- Footer ---- */
+  .footer {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    opacity: 0.5;
+  }
+
+  @media (max-width: 500px) {
+    .field-row { flex-direction: column; gap: 0; }
+    .field-row .field { margin-bottom: 20px; }
+    .field-row .field:last-child { margin-bottom: 0; }
+    .header h1 { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ============================================
+    CUSTOMIZE: Header section
+    Change kicker, title, and subtitle to match
+    your specific tool.
+  ============================================ -->
+  <div class="header">
+    <div class="kicker">High Vibrancy Living</div>
+    <h1>Healy Potency Checker</h1>
+    <p>Enter your scan result below and get a personalised interpretation based on plane, stage, depth, and suggested next steps.</p>
+  </div>
+
+  <!-- Input form -->
+  <div class="card" id="input-section">
+    <div class="card-title">Your scan result</div>
+
+    <!-- ============================================
+      CUSTOMIZE: These are the input fields.
+      Add, remove, or rename them to match what
+      your specific tool needs from the user.
+      Keep it to 3-5 fields maximum.
+    ============================================ -->
+
+    <div class="field">
+      <label for="scan-topic">Scan topic / result</label>
+      <div class="field-hint">The specific topic or pattern that came up in your scan.</div>
+      <input type="text" id="scan-topic" placeholder="e.g. I immediately reject compliments">
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="relevance">Relevance %</label>
+        <input type="number" id="relevance" placeholder="e.g. 83" min="0" max="100">
+      </div>
+      <div class="field">
+        <label for="intensity">Intensity (1-10)</label>
+        <input type="number" id="intensity" placeholder="e.g. 7" min="1" max="10">
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="potency">Homeopathic potency</label>
+      <div class="field-hint">The potency shown in your scan result.</div>
+      <input type="text" id="potency" placeholder="e.g. D 1E24">
+    </div>
+
+    <!-- CUSTOMIZE: Change the button label -->
+    <button class="btn-primary" id="submit-btn" onclick="handleSubmit()">
+      <span id="btn-text">✨ Interpret My Result</span>
+      <div class="spinner" id="spinner"></div>
+    </button>
+    <div class="error-msg" id="error-msg"></div>
+  </div>
+
+  <!-- ============================================
+    Email gate: shown before results are revealed.
+    CUSTOMIZE: Change the headline and description
+    to match your brand voice and offer.
+  ============================================ -->
+  <div id="email-gate">
+    <h2>Your interpretation is ready</h2>
+    <p>Enter your email and I'll send your result straight to you -- plus tips on how to use it in your practice.</p>
+    <div class="field" style="margin-bottom:14px;">
+      <label for="user-email">Email address</label>
+      <input type="email" id="user-email" placeholder="you@example.com">
+    </div>
+    <button class="btn-primary" onclick="handleEmailSubmit()">Show My Result</button>
+    <div class="error-msg" id="email-error"></div>
+  </div>
+
+  <!-- Results -->
+  <div id="results">
+
+    <!-- The full interpretation -->
+    <div class="result-card">
+      <div class="result-label">Your interpretation</div>
+      <div id="result-interpretation" class="result-body"></div>
+
+      <!-- Key finding highlight -->
+      <div class="highlight-box">
+        <div class="label">Key finding</div>
+        <div class="content" id="result-key-finding"></div>
+      </div>
+
+      <!-- Next step -->
+      <div class="next-step">
+        <div class="label">Your next step</div>
+        <div class="content" id="result-next-step"></div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="actions">
+      <button class="btn-primary" onclick="downloadResult()">Download My Result</button>
+      <button class="btn-secondary" onclick="resetTool()">Start Over</button>
+    </div>
+
+    <!-- CUSTOMIZE: Change this disclaimer to match your framework -->
+    <p class="disclaimer">This interpretation is offered within a wellness and energetic framework for self-exploration only. It is not medical advice, diagnosis, or treatment. Always work with a qualified healthcare professional for medical concerns.</p>
+
+  </div>
+
+  <!-- CUSTOMIZE: Change footer brand name -->
+  <div class="footer">High Vibrancy Living &nbsp;·&nbsp; Powered by AI</div>
+
+</div>
+
+<script>
+// ============================================
+// State
+// ============================================
+let pendingInput = null;
+let currentResult = null;
+
+// ============================================
+// CUSTOMIZE: Validate that required fields
+// are filled before allowing submission.
+// Update field IDs to match your inputs above.
+// ============================================
+function getInputValues() {
+  const topic    = document.getElementById('scan-topic').value.trim();
+  const relevance = document.getElementById('relevance').value.trim();
+  const intensity = document.getElementById('intensity').value.trim();
+  const potency  = document.getElementById('potency').value.trim();
+
+  if (!topic) return { error: 'Please enter your scan topic or result.' };
+  if (!relevance) return { error: 'Please enter the relevance percentage.' };
+  if (!intensity) return { error: 'Please enter the intensity value.' };
+  if (!potency) return { error: 'Please enter the homeopathic potency.' };
+
+  // CUSTOMIZE: Format this summary string to match your fields.
+  // This is what gets sent to the AI -- make it descriptive.
+  return {
+    text: `Scan topic: ${topic}\nRelevance: ${relevance}%\nIntensity: ${intensity}/10\nHomeopathic potency: ${potency}`
+  };
+}
+
+function showError(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+function hideError(id) {
+  document.getElementById(id).style.display = 'none';
+}
+
+// ============================================
+// Step 1: User clicks submit
+// Validate inputs, store them, show email gate
+// ============================================
+function handleSubmit() {
+  hideError('error-msg');
+  const input = getInputValues();
+  if (input.error) { showError('error-msg', input.error); return; }
+
+  pendingInput = input.text;
+
+  // Show email gate
+  document.getElementById('email-gate').style.display = 'block';
+  document.getElementById('email-gate').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ============================================
+// Step 2: User enters email, then API is called
+// ============================================
+async function handleEmailSubmit() {
+  hideError('email-error');
+  const email = document.getElementById('user-email').value.trim();
+  if (!email || !email.includes('@')) {
+    showError('email-error', 'Please enter a valid email address.');
+    return;
+  }
+
+  const btn = document.querySelector('#email-gate .btn-primary');
+  btn.disabled = true;
+  btn.textContent = 'Generating...';
+
+  try {
+    // CUSTOMIZE: Change '/api/checker' to match your Vercel function filename
+    const res = await fetch('/api/checker', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userInput: pendingInput, email: email })
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Something went wrong.');
+
+    currentResult = data;
+    showResults(data);
+
+  } catch (err) {
+    showError('email-error', err.message);
+    btn.disabled = false;
+    btn.textContent = 'Show My Result';
+  }
+}
+
+// ============================================
+// Render results into the page
+// ============================================
+function showResults(data) {
+  // Interpretation body -- render line breaks as paragraphs
+  const interpEl = document.getElementById('result-interpretation');
+  const paragraphs = (data.interpretation || '').split('\n').filter(l => l.trim());
+  interpEl.innerHTML = paragraphs.map(p => `<p>${p}</p>`).join('');
+
+  document.getElementById('result-key-finding').textContent = data.key_finding || '';
+  document.getElementById('result-next-step').textContent = data.next_step || '';
+
+  document.getElementById('email-gate').style.display = 'none';
+  document.getElementById('results').style.display = 'block';
+  document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ============================================
+// Download result as a text file
+// ============================================
+function downloadResult() {
+  if (!currentResult) return;
+  // CUSTOMIZE: Change the filename and header text
+  const text = [
+    'HIGH VIBRANCY LIVING -- HEALY POTENCY CHECKER',
+    '='.repeat(48),
+    '',
+    'YOUR SCAN INPUT',
+    '-'.repeat(24),
+    pendingInput || '',
+    '',
+    'INTERPRETATION',
+    '-'.repeat(24),
+    currentResult.interpretation || '',
+    '',
+    'KEY FINDING',
+    '-'.repeat(24),
+    currentResult.key_finding || '',
+    '',
+    'YOUR NEXT STEP',
+    '-'.repeat(24),
+    currentResult.next_step || '',
+    '',
+    '='.repeat(48),
+    'This interpretation is for wellness and self-exploration only.',
+    'Not medical advice. Please work with a healthcare professional for medical concerns.'
+  ].join('\n');
+
+  const blob = new Blob([text], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  // CUSTOMIZE: Change the downloaded filename
+  a.download = 'healy-potency-result.txt';
+  a.click();
+}
+
+// ============================================
+// Reset the tool back to empty form
+// ============================================
+function resetTool() {
+  pendingInput = null;
+  currentResult = null;
+  document.getElementById('scan-topic').value = '';
+  document.getElementById('relevance').value = '';
+  document.getElementById('intensity').value = '';
+  document.getElementById('potency').value = '';
+  document.getElementById('user-email').value = '';
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('email-gate').style.display = 'none';
+  hideError('error-msg');
+  hideError('email-error');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
