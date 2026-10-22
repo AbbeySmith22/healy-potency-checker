@@ -798,13 +798,14 @@ IMPORTANT: This is a wellness tool only. Do not make medical claims, diagnoses, 
         throw new Error('Missing result sections');
       }
 
-    } catch (parseError) {
-      console.error('AI response parsing failed:', parseError.message);
+  
+} catch (parseError) {
+  console.error('AI response parsing failed:', parseError.message);
 
-      return res.status(502).json({
-        error: 'The AI response was incomplete or incorrectly formatted. Please try again.'
-      });
-    }
+  // Let the main error handler refund the reserved credit
+  throw new Error('Invalid Potency Checker result');
+}
+
 
 
     return res.status(200).json(result);
