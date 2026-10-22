@@ -100,10 +100,27 @@ async function refundHealyCredit(userId, usageId) {
   return true;
 }
 
+
 module.exports = async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+  // Allow requests from Lovable
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'Content-Type, Authorization'
+  );
+
+  // Handle browser preflight checks
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
   }
+
+  if (req.method !== 'POST') {
+    return res.status(405).json({
+      error: 'Method not allowed'
+    });
+  }
+
 
   // Verify the member's Supabase login
   let member;
