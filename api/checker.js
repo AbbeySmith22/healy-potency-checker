@@ -164,7 +164,8 @@ const potencyMatch = input.match(
     !Number.isInteger(intensity) ||
     intensity < 1 ||
     intensity > 10 ||
-    !/^(D|C|LM)\s*(?:\d+(?:E\d+)?|[IVXLCDM]+)$/i.test(potency)
+
+!/^(?:[DC]\s*(?:\d+(?:E\d+)?)|LM\s*(?:\d+(?:E\d+)?|[IVXLCDM]+))$/i.test(potency)
   ) {
     return res.status(400).json({
       error: 'Please enter a scan topic, relevance between -100% and 100%, intensity from 1 to 10, and a valid D, C or LM potency.'
