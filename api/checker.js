@@ -139,9 +139,11 @@ module.exports = async function handler(req, res) {
   const intensityMatch = input.match(
     /intensity\s*:\s*(\d+)/i
   );
-  const potencyMatch = input.match(
-    /potency\s*:\s*(.+)/i
-  );
+ 
+const potencyMatch = input.match(
+  /(?:homeopathic\s+)?potency\s*:\s*(.+)/i
+);
+
 
   const topic = topicMatch?.[1]?.trim() || '';
   const relevance = relevanceMatch
