@@ -126,6 +126,47 @@ module.exports = async function handler(req, res) {
   const { userInput, email } = req.body || {};
 
   if (!userInput) return res.status(400).json({ error: 'Missing input' });
+  
+  // Validate the four scan inputs before reserving credits
+  const input = String(userInput || '').trim();
+
+  const topicMatch = input.match(
+    /(?:scan\s*topic|topic|scan\s*result)\s*:\s*(.+)/i
+  );
+  const relevanceMatch = input.match(
+    /relevan(?:ce|cy)\s*:\s*(-?\d+(?:\.\d+)?)\s*%?/i
+  );
+  const intensityMatch = input.match(
+    /intensity\s*:\s*(\d+)/i
+  );
+  const potencyMatch = input.match(
+    /potency\s*:\s*(.+)/i
+  );
+
+  const topic = topicMatch?.[1]?.trim() || '';
+  const relevance = relevanceMatch
+    ? Number(relevanceMatch[1])
+    : NaN;
+  const intensity = intensityMatch
+    ? Number(intensityMatch[1])
+    : NaN;
+  const potency = potencyMatch?.[1]?.trim() || '';
+
+  if (
+    topic.length < 5 ||
+    !Number.isFinite(relevance) ||
+    relevance < -100 ||
+    relevance > 100 ||
+    !Number.isInteger(intensity) ||
+    intensity < 1 ||
+    intensity > 10 ||
+    !/^(D|C|LM)\s*(?:\d+(?:E\d+)?|[IVXLCDM]+)$/i.test(potency)
+  ) {
+    return res.status(400).json({
+      error: 'Please enter a scan topic, relevance between -100% and 100%, intensity from 1 to 10, and a valid D, C or LM potency.'
+    });
+  }
+
  if (!process.env.ANTHROPIC_API_KEY) {
     return res.status(500).json({ error: 'API key not configured' });
   }
