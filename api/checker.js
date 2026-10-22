@@ -126,7 +126,9 @@ module.exports = async function handler(req, res) {
   const { userInput, email } = req.body || {};
 
   if (!userInput) return res.status(400).json({ error: 'Missing input' });
-
+ if (!process.env.ANTHROPIC_API_KEY) {
+    return res.status(500).json({ error: 'API key not configured' });
+  }
   // Reserve one credit before generating a result
   let creditUsageId = null;
 
@@ -147,9 +149,7 @@ module.exports = async function handler(req, res) {
     });
   }
 
-  if (!process.env.ANTHROPIC_API_KEY) {
-    return res.status(500).json({ error: 'API key not configured' });
-  }
+
 
   // ============================================
   // Email capture
