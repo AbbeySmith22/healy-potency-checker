@@ -809,10 +809,30 @@ IMPORTANT: This is a wellness tool only. Do not make medical claims, diagnoses, 
 
     return res.status(200).json(result);
 
+
   } catch (err) {
     console.error('Checker error:', err.message);
-    return res.status(500).json({ error: err.message || 'Something went wrong. Please try again.' });
+
+    if (creditUsageId !== null) {
+      try {
+        await refundHealyCredit(member.id, creditUsageId);
+        creditUsageId = null;
+        console.log('Potency Checker credit refunded');
+      } catch (refundError) {
+        console.error(
+          'IMPORTANT: Potency Checker credit refund failed:',
+          refundError.message,
+          'Usage ID:',
+          creditUsageId
+        );
+      }
+    }
+
+    return res.status(500).json({
+      error: 'We could not complete your Potency Checker result. Please try again. Check your credit balance before retrying.'
+    });
   }
+
 }
 
 
