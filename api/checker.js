@@ -127,6 +127,26 @@ module.exports = async function handler(req, res) {
 
   if (!userInput) return res.status(400).json({ error: 'Missing input' });
 
+  // Reserve one credit before generating a result
+  let creditUsageId = null;
+
+  try {
+    const credit = await reserveHealyCredit(member.id);
+
+    if (!credit.success) {
+      return res.status(402).json({
+        error: credit.error
+      });
+    }
+
+    creditUsageId = credit.usageId;
+  } catch (error) {
+    console.error('Credit reservation error:', error);
+    return res.status(503).json({
+      error: 'We could not check your credits. Please try again.'
+    });
+  }
+
   if (!process.env.ANTHROPIC_API_KEY) {
     return res.status(500).json({ error: 'API key not configured' });
   }
