@@ -32,6 +32,43 @@ async function verifyHealyMember(req) {
   };
 }
 
+async function reserveHealyCredit(userId) {
+  const response = await fetch(
+    `${process.env.SUPABASE_URL}/rest/v1/rpc/reserve_tool_credit`,
+    {
+      method: 'POST',
+      headers: {
+        apikey: process.env.SUPABASE_SECRET_KEY,
+        Authorization: `Bearer ${process.env.SUPABASE_SECRET_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        p_user_id: userId,
+        p_tool_name: 'potency-checker'
+      })
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error('Could not check your credits. Please try again.');
+  }
+
+  const result = await response.json();
+
+  if (!result || result.success !== true || !result.usage_id) {
+    return {
+      success: false,
+      error: 'You have no credits remaining. Please upgrade your membership or wait for your next credit refill.'
+    };
+  }
+
+  return {
+    success: true,
+    usageId: result.usage_id,
+    creditsRemaining: result.credits_remaining
+  };
+}
+
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
