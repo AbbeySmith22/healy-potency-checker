@@ -70,6 +70,36 @@ async function reserveHealyCredit(userId) {
 }
 
 
+async function refundHealyCredit(userId, usageId) {
+  const response = await fetch(
+    `${process.env.SUPABASE_URL}/rest/v1/rpc/refund_tool_credit`,
+    {
+      method: 'POST',
+      headers: {
+        apikey: process.env.SUPABASE_SECRET_KEY,
+        Authorization: `Bearer ${process.env.SUPABASE_SECRET_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        p_user_id: userId,
+        p_usage_id: usageId
+      })
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error('Credit refund request failed');
+  }
+
+  const refunded = await response.json();
+
+  if (refunded !== true) {
+    throw new Error('Credit refund was not confirmed');
+  }
+
+  return true;
+}
+
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
