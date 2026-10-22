@@ -32,10 +32,32 @@ async function verifyHealyMember(req) {
   };
 }
 
-module.exports = async function handler(req, res) {
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { userInput, email } = req.body;
+module.exports = async function handler(req, res) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  // Verify the member's Supabase login
+  let member;
+
+  try {
+    member = await verifyHealyMember(req);
+  } catch (error) {
+    console.error('Supabase authentication error:', error);
+    return res.status(503).json({
+      error: 'Login verification is temporarily unavailable. Please try again.'
+    });
+  }
+
+  if (!member) {
+    return res.status(401).json({
+      error: 'Please log in to your High Vibrancy Living account to use this tool.'
+    });
+  }
+
+  const { userInput, email } = req.body || {};
+
   if (!userInput) return res.status(400).json({ error: 'Missing input' });
 
   if (!process.env.ANTHROPIC_API_KEY) {
