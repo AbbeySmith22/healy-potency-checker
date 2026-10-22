@@ -1,3 +1,37 @@
+
+async function verifyHealyMember(req) {
+  const authorization = req.headers.authorization || '';
+
+  if (!authorization.startsWith('Bearer ')) {
+    return null;
+  }
+
+  const token = authorization.slice(7).trim();
+
+  if (!token) return null;
+
+  const response = await fetch(
+    `${process.env.SUPABASE_URL}/auth/v1/user`,
+    {
+      headers: {
+        apikey: process.env.SUPABASE_PUBLISHABLE_KEY,
+        Authorization: `Bearer ${token}`
+      }
+    }
+  );
+
+  if (!response.ok) return null;
+
+  const user = await response.json();
+
+  if (!user?.id || !user?.email) return null;
+
+  return {
+    id: user.id,
+    email: user.email
+  };
+}
+
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
