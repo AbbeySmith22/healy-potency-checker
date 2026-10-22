@@ -136,9 +136,11 @@ module.exports = async function handler(req, res) {
   const relevanceMatch = input.match(
     /relevan(?:ce|cy)\s*:\s*(-?\d+(?:\.\d+)?)\s*%?/i
   );
-  const intensityMatch = input.match(
-    /intensity\s*:\s*(\d+)/i
-  );
+  
+const intensityMatch = input.match(
+  /intensity\s*:\s*(\d+)\s*(?:\/\s*10)?\s*(?:\n|$)/i
+);
+
  
 const potencyMatch = input.match(
   /(?:homeopathic\s+)?potency\s*:\s*(.+)/i
